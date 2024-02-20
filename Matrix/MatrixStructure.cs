@@ -1,6 +1,6 @@
 ﻿namespace Matrix
 {
-    public class MatrixStructure<T>
+    public class MatrixStructure<T> where T : new()
     {
         private T[,] rawMatrix;
 
@@ -13,6 +13,14 @@
             Rows = rows;
             Columns = columns;
             rawMatrix = new T[rows, columns];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    rawMatrix[i, j] = new T();
+                }
+            }
         }
         public T this[int row, int column]
         {
@@ -62,6 +70,23 @@
                     {
                         result[i, j] += (dynamic)a[i, k] * b[k, j];
                     }
+                }
+            }
+
+            return result;
+        }
+        public static MatrixStructure<T> operator +(MatrixStructure<T> a, MatrixStructure<T> b)
+        {
+            if (a.Rows != b.Rows || a.Columns != b.Columns)
+                throw new InvalidOperationException("Invalid operation for this type.");
+
+            MatrixStructure<T> result = new MatrixStructure<T>(a.Rows, a.Columns);
+
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    result[i, j] = (dynamic)a[i, j] + b[i, j];
                 }
             }
 
